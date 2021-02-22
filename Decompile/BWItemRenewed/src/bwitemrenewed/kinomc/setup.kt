@@ -21,12 +21,12 @@ class setup : JavaPlugin() {
         saveDefaultConfig()
 
         BackStrengthSmallLevel = config.getInt("BackStrengthSmallLevel")
-        InteractEvent.GunList.add(Material.WOOD_HOE)
-        InteractEvent.GunList.add(Material.GOLD_HOE)
-        InteractEvent.GunList.add(Material.DIAMOND_HOE)
-        InteractEvent.DropList.add(EntityType.ARROW)
-        InteractEvent.DropList.add(EntityType.ARMOR_STAND)
-        Bukkit.getPluginManager().registerEvents(InteractEvent(), this)
+        EventManager.GunList.add(Material.WOOD_HOE)
+        EventManager.GunList.add(Material.GOLD_HOE)
+        EventManager.GunList.add(Material.DIAMOND_HOE)
+        EventManager.DropList.add(EntityType.ARROW)
+        EventManager.DropList.add(EntityType.ARMOR_STAND)
+        Bukkit.getPluginManager().registerEvents(EventManager(), this)
         Bukkit.getLogger().info(util.MessageReplace("&cBedwarsGun已经加载"))
 
     }

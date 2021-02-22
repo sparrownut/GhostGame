@@ -49,6 +49,25 @@ class FireParticle {
             }.runTaskTimerAsynchronously(setup.instance, 0, 0)
 
         }
+        fun SuperFireParticle(p: Player) {
+            object : BukkitRunnable() {
+                override fun run() {
+                    val loc = p.location
+                    val packet = PacketPlayOutWorldParticles(
+                        EnumParticle.SMOKE_LARGE, true,
+                        loc.x.toFloat(), p.eyeLocation.y.toFloat(), loc.z.toFloat(), 1F, 0F, 0F, 1F, 1
+                    )//设置开火的粒子包
+                    for(i in 0..10) {
+                        for (online in Bukkit.getOnlinePlayers()) {
+                            (online as CraftPlayer).handle.playerConnection.sendPacket(packet)
+                        }//send
+                    }
+                    cancel()
+                    return
+                }
+            }.runTaskTimerAsynchronously(setup.instance, 0, 0)
+
+        }
         fun BlockPlaceParticle(b: Block) {
             object : BukkitRunnable() {
                 override fun run() {

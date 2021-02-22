@@ -3,6 +3,7 @@ package bwitemrenewed.kinomc
 import bedwarsgun.bedwarsgun.GunManager.DefaultGun
 import bwitemrenewed.kinomc.bedwarsprotect.ProtectBuilding
 import bwitemrenewed.kinomc.TrapManager.DefaultTrap
+import bwitemrenewed.kinomc.gunmanager.SuperGun
 import bwitemrenewed.kinomc.rushmode.RushModeCore
 import io.github.bedwarsrel.events.BedwarsGameStartedEvent
 import io.github.bedwarsrel.game.Game
@@ -22,7 +23,7 @@ import org.bukkit.potion.PotionEffectType
 import java.util.*
 
 
-class InteractEvent : Listener {
+class EventManager : Listener {
 
     companion object{
         var GunList = ArrayList<Material>()
@@ -60,8 +61,9 @@ class InteractEvent : Listener {
         }
     }
     @EventHandler
-    fun onMove(event: PlayerMoveEvent){
-        DefaultTrap.DefaultTrapMove(event)
+    fun onMove(event: PlayerMoveEvent){//移动事件 机枪和陷阱需要
+        SuperGun().superGunModelEvent(event,Material.STONE_HOE)//机枪
+        DefaultTrap.DefaultTrapMove(event)//陷阱
     }
     @EventHandler
     fun onPut(event:BlockPlaceEvent){
@@ -79,8 +81,11 @@ class InteractEvent : Listener {
         d.DefaultGunModel(evnet, Material.DIAMOND_HOE, 20F, 1, 48, 40F, 1F)//步枪
         d.DefaultGunModel(evnet, Material.WOOD_HOE, 2F, 3, 12, 50F, 4F)//木制枪
         d.DefaultGunModel(evnet, Material.GOLD_HOE, 0.2F, 3, 2, 150F, 0.1F)//狙击枪
+        val s = SuperGun()
+        s.superGunmodel(evnet,Material.STONE_HOE,CoolDownSpeed = 40F,SingleLoadTime = 1,MaxLoad = 128,SPEED = 70F,SPREAD = 20F)//机枪
         GunList.add(Material.WOOD_HOE)
         GunList.add(Material.GOLD_HOE)
+        GunList.add(Material.STONE_HOE)
         GunList.add(Material.DIAMOND_HOE)
     }
     @EventHandler
