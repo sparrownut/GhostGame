@@ -19,8 +19,8 @@ class setup : JavaPlugin() {
         // Plugin startup logic
         instance = this
         saveDefaultConfig()
-
-        BackStrengthSmallLevel = config.getInt("BackStrengthSmallLevel")
+        BackStrengthSmallLevel = config.getInt("BackStrengthSmallLevel")//读取击退等级
+        ExpendBlock = config.getInt("ExpendBlock")//读取方块延伸距离
         EventManager.GunList.add(Material.WOOD_HOE)
         EventManager.GunList.add(Material.GOLD_HOE)
         EventManager.GunList.add(Material.STONE_HOE)

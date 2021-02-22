@@ -1,6 +1,7 @@
 package bwitemrenewed.kinomc.gunmanager
 
 import bedwarsgun.bedwarsgun.utils.utils
+import bwitemrenewed.kinomc.EventManager
 import bwitemrenewed.kinomc.particlemanager.FireParticle.Companion.SuperFireParticle
 import bwitemrenewed.kinomc.setup
 import org.bukkit.Bukkit
@@ -30,7 +31,9 @@ class SuperGun {
                 false
             )//视角变化
         }else{
-            event.player.removePotionEffect(PotionEffectType.SLOW)
+            if(event.player.itemInHand.type !in EventManager.GunList) {
+                event.player.removePotionEffect(PotionEffectType.SLOW)
+            }
         }
     }
     fun superGunmodel(

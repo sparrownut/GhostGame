@@ -1,0 +1,10 @@
+name: GhostGame
+version: ${project.version}
+main: ghostgame.stupidfish.setup
+api-version: 1.8
+authors: [ stupidfish ]
+description: this is a ghostgame game
+commands:
+  ghostgame:
+    aliases: [ ghostgame ]
+    permission: ghostgame.basic

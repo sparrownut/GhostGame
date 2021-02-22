@@ -17,6 +17,7 @@ import org.bukkit.event.Listener
 import org.bukkit.event.block.BlockBreakEvent
 import org.bukkit.event.block.BlockPlaceEvent
 import org.bukkit.event.entity.EntityDamageEvent
+import org.bukkit.event.inventory.InventoryMoveItemEvent
 import org.bukkit.event.player.*
 import org.bukkit.potion.PotionEffect
 import org.bukkit.potion.PotionEffectType
@@ -66,27 +67,29 @@ class EventManager : Listener {
         DefaultTrap.DefaultTrapMove(event)//陷阱
     }
     @EventHandler
+    fun onItemMove(event:InventoryMoveItemEvent){
+        if(event.item.type in EventManager.GunList){
+            event.isCancelled = true//如果移动枪械 取消事件
+        }
+    }
+    @EventHandler
     fun onPut(event:BlockPlaceEvent){
         DefaultTrap.DefaultTrapPut(event)
         PlayerCanExpendBlockMap[event.player] = true//防止方块卡人
         Bukkit.getScheduler().runTaskLater(setup.instance,{ PlayerCanExpendBlockMap[event.player] = false},2L)//防止方块卡人
     }
     @EventHandler
-    fun onInteraceEvent(evnet: PlayerInteractEvent) {//点击事件
+    fun onInteraceEvent(event: PlayerInteractEvent) {//点击事件
         Bukkit.getScheduler().runTaskLater(setup.instance,{
-            RushModeCore().Core(evnet)//快速搭路模式
+            RushModeCore().Core(event)//快速搭路模式
         },1L)
 
         val d = DefaultGun()
-        d.defaultGunModel(evnet, Material.DIAMOND_HOE, 20F, 1, 48, 40F, 1F)//步枪
-        d.defaultGunModel(evnet, Material.WOOD_HOE, 2F, 3, 12, 50F, 4F)//木制枪
-        d.defaultGunModel(evnet, Material.GOLD_HOE, 0.2F, 3, 2, 120F, 0.1F)//狙击枪
+        d.defaultGunModel(event, Material.DIAMOND_HOE, 20F, 1, 48, 40F, 1F)//步枪
+        d.defaultGunModel(event, Material.WOOD_HOE, 2F, 3, 12, 50F, 4F)//木制枪
+        d.defaultGunModel(event, Material.GOLD_HOE, 0.2F, 3, 2, 120F, 0.1F)//狙击枪
         val s = SuperGun()
-        s.superGunmodel(evnet,Material.STONE_HOE,CoolDownSpeed = 40F,SingleLoadTime = 1,MaxLoad = 128,SPEED = 70F,SPREAD = 20F)//机枪
-        GunList.add(Material.WOOD_HOE)
-        GunList.add(Material.GOLD_HOE)
-        GunList.add(Material.STONE_HOE)
-        GunList.add(Material.DIAMOND_HOE)
+        s.superGunmodel(event,Material.STONE_HOE,CoolDownSpeed = 40F,SingleLoadTime = 1,MaxLoad = 96,SPEED = 70F,SPREAD = 20F)//机枪
     }
     @EventHandler
     fun onSneak(event:PlayerToggleSneakEvent){

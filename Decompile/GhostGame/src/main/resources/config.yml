@@ -1,0 +1,29 @@
+mapName: '蛮荒之地'
+lobby: ghostLobby #执行结束时的回大厅命令
+minPlayer: 2
+maxPlayer: 4
+JoinGamemode: 2
+TauntImagePath: /home/stupidfish/images/tauntImage.png
+kill_Reward: give %player% 50
+win_Reward: give %player% 100
+taunt_Reward: give %player% 20
+kill_tip: '&a奖励&e50&a金币'
+win_tip: '&a奖励&c100&a金币'
+taunt_tip: '&a奖励&b20&a金币'
+SpawnLoc:
+  ==: org.bukkit.Location
+  world: world
+  x: 1
+  y: 100
+  z: 1
+  pitch: 0
+  yaw: 0
+GameLoc:
+  ==: org.bukkit.Location
+  world: world
+  x: 1
+  y: 100
+  z: 1
+  pitch: 0
+  yaw: 0
+

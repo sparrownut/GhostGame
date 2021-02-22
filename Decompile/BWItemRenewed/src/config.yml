@@ -1,1 +1,2 @@
-BackStrengthSmallLevel: 50
+BackStrengthSmallLevel: 50 # 等级越高 后座力越小
+ExpendBlock: 16 #方块延伸距离
