@@ -24,7 +24,7 @@ class DefaultGun {
         var map = hashMapOf<Player, Float>()
     }
 
-    fun DefaultGunModel(
+    fun defaultGunModel(
         event: PlayerInteractEvent,
         GunMaterial: Material,
         CoolDownSpeed: Float,
@@ -40,18 +40,18 @@ class DefaultGun {
             if (item.type == GunMaterial) {//如果是这个材料的
                 if (event.action == Action.RIGHT_CLICK_AIR || event.action == Action.RIGHT_CLICK_BLOCK) {//如果是右键 发射
                     if (map.get(player) == null) {
-                        PistoolShoot(event, CoolDownSpeed, cdValue, SPEED, SPREAD)//射事件 会射而且冷却程度归0
+                        pistoolShoot(event, CoolDownSpeed, cdValue, SPEED, SPREAD)//射事件 会射而且冷却程度归0
                     } else if (map.get(player)!! >= cdValue) {
-                        PistoolShoot(event, CoolDownSpeed, cdValue, SPEED, SPREAD)//射事件 会射而且冷却程度归0
+                        pistoolShoot(event, CoolDownSpeed, cdValue, SPEED, SPREAD)//射事件 会射而且冷却程度归0
                     }
                 } else if (event.action == Action.LEFT_CLICK_AIR || event.action == Action.LEFT_CLICK_BLOCK) {//如果时左键 装弹
-                    GunLoad(player, event.item, MaxLoad, SingleLoadTime)//装填
+                    gunLoad(player, event.item, MaxLoad, SingleLoadTime)//装填
                 }
             }
         }
     }
 
-    fun PistoolShoot(
+    private fun pistoolShoot(
         event: PlayerInteractEvent,
         CoolDownSpeed: Float,
         cdValue: Int,
@@ -60,7 +60,7 @@ class DefaultGun {
     ) {//射击事件
         if (event.item.amount >= 2) {//如果还有弹药
             val player = event.player
-            ItemAmountLoss(event.item)//弹药减少
+            itemAmountLoss(event.item)//弹药减少
             object : BukkitRunnable() {
                 override fun run() {
                     map.get(player)?.plus(CoolDownSpeed)?.let { map.put(player, it) }
@@ -70,7 +70,7 @@ class DefaultGun {
                     }
                 }
 
-            }.runTaskTimer(setup.instance, 0L, 1L)//回复饥饿
+            }.runTaskTimer(setup.instance, 0L, 1L)//回复
             val blockSet = HashSet<Material>()
             blockSet.add(Material.AIR)
             val PlayerSeeLocation = player.getTargetBlock(blockSet, 1).location
@@ -88,7 +88,7 @@ class DefaultGun {
             val originalVector = player.location.direction
             FireParticle.FireParticle(player)//生成开火的粒子
             player.velocity = Vector(0 - originalVector.x, (0 - originalVector.y), 0 - originalVector.z).multiply(SPEED/setup.BackStrengthSmallLevel)//后座力
-            if(SPEED > 250) {
+            if(SPEED > 100) {
                 player.addPotionEffect(
                     PotionEffect(PotionEffectType.BLINDNESS, 1, 255, false, false),
                     false
@@ -113,14 +113,14 @@ class DefaultGun {
         }
     }//射击
 
-    fun ItemAmountLoss(item: ItemStack) {
-        val Itemamount = item.amount
-        if (Itemamount >= 2) {//确保数量>0
+    private fun itemAmountLoss(item: ItemStack) {
+        val itemamount = item.amount
+        if (itemamount >= 2) {//确保数量>0
             item.amount--//减少一个item数量
         }
     }//损耗
 
-    fun GunLoad(player: Player, item: ItemStack, MaxLoad: Int, SingleLoadTime: Int) {
+    private fun gunLoad(player: Player, item: ItemStack, MaxLoad: Int, SingleLoadTime: Int) {
         object : BukkitRunnable() {
             override fun run() {
                 //装填事件

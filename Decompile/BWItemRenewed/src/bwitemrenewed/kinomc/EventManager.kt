@@ -78,9 +78,9 @@ class EventManager : Listener {
         },1L)
 
         val d = DefaultGun()
-        d.DefaultGunModel(evnet, Material.DIAMOND_HOE, 20F, 1, 48, 40F, 1F)//步枪
-        d.DefaultGunModel(evnet, Material.WOOD_HOE, 2F, 3, 12, 50F, 4F)//木制枪
-        d.DefaultGunModel(evnet, Material.GOLD_HOE, 0.2F, 3, 2, 150F, 0.1F)//狙击枪
+        d.defaultGunModel(evnet, Material.DIAMOND_HOE, 20F, 1, 48, 40F, 1F)//步枪
+        d.defaultGunModel(evnet, Material.WOOD_HOE, 2F, 3, 12, 50F, 4F)//木制枪
+        d.defaultGunModel(evnet, Material.GOLD_HOE, 0.2F, 3, 2, 120F, 0.1F)//狙击枪
         val s = SuperGun()
         s.superGunmodel(evnet,Material.STONE_HOE,CoolDownSpeed = 40F,SingleLoadTime = 1,MaxLoad = 128,SPEED = 70F,SPREAD = 20F)//机枪
         GunList.add(Material.WOOD_HOE)

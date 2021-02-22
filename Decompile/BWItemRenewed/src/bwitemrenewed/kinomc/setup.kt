@@ -23,6 +23,7 @@ class setup : JavaPlugin() {
         BackStrengthSmallLevel = config.getInt("BackStrengthSmallLevel")
         EventManager.GunList.add(Material.WOOD_HOE)
         EventManager.GunList.add(Material.GOLD_HOE)
+        EventManager.GunList.add(Material.STONE_HOE)
         EventManager.GunList.add(Material.DIAMOND_HOE)
         EventManager.DropList.add(EntityType.ARROW)
         EventManager.DropList.add(EntityType.ARMOR_STAND)

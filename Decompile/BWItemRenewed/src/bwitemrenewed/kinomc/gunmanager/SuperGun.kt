@@ -79,7 +79,7 @@ class SuperGun {
                     }
                 }
 
-            }.runTaskTimer(setup.instance, 0L, 1L)//回复饥饿
+            }.runTaskTimer(setup.instance, 0L, 1L)//回复
             val blockSet = HashSet<Material>()
             blockSet.add(Material.AIR)
             val PlayerSeeLocation = player.getTargetBlock(blockSet, 1).location
@@ -96,8 +96,8 @@ class SuperGun {
             arrow.velocity = player.location.direction.multiply(SPEED)//速度
             val originalVector = player.location.direction
             SuperFireParticle(player)//生成开火的粒子
-            player.velocity = Vector(0 - originalVector.x, (0 - originalVector.y), 0 - originalVector.z).multiply(SPEED/ 200)//后座力
-            if(SPEED > 250) {
+            player.velocity = Vector(0 - originalVector.x, (0 - originalVector.y), 0 - originalVector.z).multiply(SPEED/ 400)//后座力
+            if(SPEED > 60) {
                 player.addPotionEffect(
                     PotionEffect(PotionEffectType.BLINDNESS, 3, 255, false, false),
                     false
