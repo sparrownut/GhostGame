@@ -8,6 +8,7 @@ import org.bukkit.block.Block
 import org.bukkit.craftbukkit.v1_8_R3.entity.CraftPlayer
 import org.bukkit.entity.Player
 import org.bukkit.scheduler.BukkitRunnable
+import kotlin.random.Random
 
 class FireParticle {
     companion object {
@@ -36,7 +37,7 @@ class FireParticle {
                     val loc = p.location
                     val packet = PacketPlayOutWorldParticles(
                         EnumParticle.REDSTONE, true,
-                        loc.x.toFloat(), p.eyeLocation.y.toFloat(), loc.z.toFloat(), 1F, 0F, 0F, 1F, 1
+                        loc.x.toFloat(), p.eyeLocation.y.toFloat(), loc.z.toFloat(), Random.nextFloat(), Random.nextFloat(), Random.nextFloat(), 1F, 1
                     )//设置开火的粒子包
                     for(i in 0..10) {
                         for (online in Bukkit.getOnlinePlayers()) {

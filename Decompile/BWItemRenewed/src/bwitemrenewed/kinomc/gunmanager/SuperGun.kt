@@ -22,7 +22,8 @@ import java.util.HashSet
 
 class SuperGun {
     companion object {
-        var map = hashMapOf<Player, Float>()
+        var coolDownMap = hashMapOf<Player, Float>()
+        var statusMap = hashMapOf<Player,Boolean>()
     }
     fun superGunModelEvent(event:PlayerMoveEvent,material:Material){
         if(event.player.itemInHand.type == material){
@@ -30,9 +31,13 @@ class SuperGun {
                 PotionEffect(PotionEffectType.SLOW, 99999, 3, false, false),
                 false
             )//视角变化
+            statusMap[event.player] = true
         }else{
-            if(event.player.itemInHand.type !in EventManager.GunList) {
-                event.player.removePotionEffect(PotionEffectType.SLOW)
+            if(event.player.itemInHand.type != Material.STONE_HOE) {
+                if(statusMap.containsKey(event.player)) {
+                    statusMap.remove(event.player)
+                    event.player.removePotionEffect(PotionEffectType.SLOW)
+                }
             }
         }
     }
@@ -51,9 +56,9 @@ class SuperGun {
         if (item != null) {
             if (item.type == GunMaterial) {//如果是这个材料的
                 if (event.action == Action.RIGHT_CLICK_AIR || event.action == Action.RIGHT_CLICK_BLOCK) {//如果是右键 发射
-                    if (map.get(player) == null) {
+                    if (coolDownMap.get(player) == null) {
                         gunShoot(event, CoolDownSpeed, cdValue, SPEED, SPREAD)//射事件 会射而且冷却程度归0
-                    } else if (map.get(player)!! >= cdValue) {
+                    } else if (coolDownMap.get(player)!! >= cdValue) {
                         gunShoot(event, CoolDownSpeed, cdValue, SPEED, SPREAD)//射事件 会射而且冷却程度归0
                     }
                 } else if (event.action == Action.LEFT_CLICK_AIR || event.action == Action.LEFT_CLICK_BLOCK) {//如果时左键 装弹
@@ -75,8 +80,8 @@ class SuperGun {
             itemAmountLoss(event.item)//弹药减少
             object : BukkitRunnable() {
                 override fun run() {
-                    map.get(player)?.plus(CoolDownSpeed)?.let { map.put(player, it) }
-                    if (map.get(player)!! >= cdValue) {
+                    coolDownMap.get(player)?.plus(CoolDownSpeed)?.let { coolDownMap.put(player, it) }
+                    if (coolDownMap.get(player)!! >= cdValue) {
                         cancel()
                         return
                     }
@@ -106,7 +111,7 @@ class SuperGun {
                     false
                 )//视角变化
 
-                player.damage(0.1)
+                player.damage(0.02)
                 player.world.playSound(player.location, Sound.EXPLODE, 10F, 0.5F)
             }else{
                 player.damage(0.01)
@@ -117,7 +122,7 @@ class SuperGun {
             arrow.knockbackStrength = 0//设置箭击退0
             arrow.shooter = player
             player.noDamageTicks = 2
-            map[player] = 0F//设置冷却进度为0
+            coolDownMap[player] = 0F//设置冷却进度为0
 
             Bukkit.getScheduler().runTaskTimer(setup.instance, Runnable { arrow.remove() }, 10L, 10L)//0.5s后清理
         } else {

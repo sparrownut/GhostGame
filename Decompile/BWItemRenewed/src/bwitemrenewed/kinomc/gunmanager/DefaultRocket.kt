@@ -1,31 +1,43 @@
-package bedwarsgun.bedwarsgun.GunManager
+package bwitemrenewed.kinomc.gunmanager
 
-import bwitemrenewed.kinomc.setup
 import bedwarsgun.bedwarsgun.utils.utils
 import bwitemrenewed.kinomc.EventManager
 import bwitemrenewed.kinomc.particlemanager.FireParticle
+import bwitemrenewed.kinomc.setup
 import org.bukkit.Bukkit
 import org.bukkit.Location
 import org.bukkit.Material
 import org.bukkit.Sound
 import org.bukkit.entity.Arrow
 import org.bukkit.entity.Player
+import org.bukkit.entity.TNTPrimed
 import org.bukkit.event.block.Action
 import org.bukkit.event.player.PlayerInteractEvent
+import org.bukkit.event.player.PlayerMoveEvent
 import org.bukkit.inventory.ItemStack
 import org.bukkit.potion.PotionEffect
 import org.bukkit.potion.PotionEffectType
 import org.bukkit.scheduler.BukkitRunnable
 import org.bukkit.util.Vector
-import java.util.*
+import java.util.HashSet
 
-
-class DefaultGun {
+class DefaultRocket {
     companion object {
         var map = hashMapOf<Player, Float>()
     }
-
-    fun defaultGunModel(
+    fun superGunModelEvent(event: PlayerMoveEvent, material: Material){
+        if(event.player.itemInHand.type == material){
+            event.player.addPotionEffect(
+                PotionEffect(PotionEffectType.SLOW, 99999, 3, false, false),
+                false
+            )//视角变化
+        }else{
+            if(event.player.itemInHand.type !in EventManager.GunList) {
+                event.player.removePotionEffect(PotionEffectType.SLOW)
+            }
+        }
+    }
+    fun superGunmodel(
         event: PlayerInteractEvent,
         GunMaterial: Material,
         CoolDownSpeed: Float,
@@ -41,9 +53,9 @@ class DefaultGun {
             if (item.type == GunMaterial) {//如果是这个材料的
                 if (event.action == Action.RIGHT_CLICK_AIR || event.action == Action.RIGHT_CLICK_BLOCK) {//如果是右键 发射
                     if (map.get(player) == null) {
-                        pistoolShoot(event, CoolDownSpeed, cdValue, SPEED, SPREAD)//射事件 会射而且冷却程度归0
+                        gunShoot(event, CoolDownSpeed, cdValue, SPEED, SPREAD)//射事件 会射而且冷却程度归0
                     } else if (map.get(player)!! >= cdValue) {
-                        pistoolShoot(event, CoolDownSpeed, cdValue, SPEED, SPREAD)//射事件 会射而且冷却程度归0
+                        gunShoot(event, CoolDownSpeed, cdValue, SPEED, SPREAD)//射事件 会射而且冷却程度归0
                     }
                 } else if (event.action == Action.LEFT_CLICK_AIR || event.action == Action.LEFT_CLICK_BLOCK) {//如果时左键 装弹
                     gunLoad(player, event.item, MaxLoad, SingleLoadTime)//装填
@@ -52,7 +64,7 @@ class DefaultGun {
         }
     }
 
-    private fun pistoolShoot(
+    private fun gunShoot(
         event: PlayerInteractEvent,
         CoolDownSpeed: Float,
         cdValue: Int,
@@ -64,8 +76,8 @@ class DefaultGun {
             itemAmountLoss(event.item)//弹药减少
             object : BukkitRunnable() {
                 override fun run() {
-                    map.get(player)?.plus(CoolDownSpeed)?.let { map.put(player, it) }
-                    if (map.get(player)!! >= cdValue) {
+                    map[player]?.plus(CoolDownSpeed)?.let { map.put(player, it) }
+                    if (map[player]!! >= cdValue) {
                         cancel()
                         return
                     }
@@ -84,43 +96,25 @@ class DefaultGun {
                 player.eyeLocation.pitch
             )//这是箭的发射位置
             //val arrow = player.launchPro...
-            val arrow = player.launchProjectile(Arrow::class.java,player.location.direction)
-            arrow.velocity = player.location.direction.multiply(SPEED)//速度
+            val TNT = player.launchProjectile(Arrow::class.java,player.location.direction)
+            TNT.velocity = player.location.direction.multiply(SPEED)//速度
             val originalVector = player.location.direction
-            FireParticle.FireParticle(player)//生成开火的粒子
-            if(EventManager.SneckList.contains(event.player)) {
-                player.velocity = Vector(
-                    0 - originalVector.x,
-                    (0 - originalVector.y),
-                    0 - originalVector.z
-                ).multiply(SPEED / (setup.BackStrengthSmallLevel*5))//如果玩家蹲下 压后座力5倍
-            }else {
-                player.velocity = Vector(
-                    0 - originalVector.x,
-                    (0 - originalVector.y),
-                    0 - originalVector.z
-                ).multiply(SPEED / setup.BackStrengthSmallLevel)//后座力
-            }
-            if(SPEED > 100) {
+            FireParticle.SuperFireParticle(player)//生成开火的粒子
+            //player.velocity = Vector(0 - originalVector.x, (0 - originalVector.y), 0 - originalVector.z).multiply(SPEED/ 400)// rpg无后座力
+            if(SPEED > 60) {
                 player.addPotionEffect(
-                    PotionEffect(PotionEffectType.BLINDNESS, 4, 255, false, false),
+                    PotionEffect(PotionEffectType.BLINDNESS, 3, 255, false, false),
                     false
                 )//视角变化
-
-                player.damage(0.5)
-                player.world.playSound(player.location, Sound.EXPLODE, 10F, 1F)
-            }else{
-                player.damage(0.01)
+                player.world.playSound(player.location, Sound.FIRE, 10F, 0.5F)
             }
-            player.world.playSound(player.location, Sound.EXPLODE, 1F, 4F)
 
-            //arrow.fireTicks = 50
-            arrow.knockbackStrength = 0//设置箭击退0
-            arrow.shooter = player
+            //arrow.fireTicks = 5
+            TNT.knockbackStrength = 0//设置箭击退0
+            TNT.shooter = player
             player.noDamageTicks = 2
-            map.put(player, 0F)//设置冷却进度为0
-
-            Bukkit.getScheduler().runTaskTimer(setup.instance, Runnable { arrow.remove() }, 10L, 10L)//0.5s后清理
+            map[player] = 0F//设置冷却进度为0
+            Bukkit.getScheduler().runTaskTimer(setup.instance, Runnable { TNT.remove() }, 200L, 200L)//10s后清理
         } else {
             utils().MessageSendRe("&c您没有弹药了 左键装填", event.player)
         }

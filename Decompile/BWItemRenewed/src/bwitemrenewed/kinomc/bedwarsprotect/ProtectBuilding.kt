@@ -40,18 +40,21 @@ class ProtectBuilding {
         bedProtectSecond.forEach(Consumer { block: Location ->//第二层羊毛
             if(block.block.type == Material.AIR) {
                 block.block.type = Material.WOOL
-                block.block.setData(ReturnTeamColorID(team.color))//设置颜色成队伍
+                block.block.setData(returnTeamColorID(team.color))//设置颜色成队伍
                 game.region.addPlacedBlock(block.block, null)
             }
         })
         return true
     }
-    private fun ReturnTeamColorID(teamcolor: TeamColor): Byte {
+    private fun returnTeamColorID(teamcolor: TeamColor): Byte {
         return when(teamcolor){
             TeamColor.GREEN -> 5
             TeamColor.YELLOW -> 4
-            TeamColor.BLUE -> 11
+            TeamColor.BLUE -> 3
             TeamColor.RED -> 14
+            TeamColor.AQUA -> 9
+            TeamColor.BLACK -> 15
+            TeamColor.GRAY -> 7
             else -> 100
         }
 

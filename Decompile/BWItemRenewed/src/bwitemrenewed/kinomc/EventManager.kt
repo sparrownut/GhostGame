@@ -22,6 +22,7 @@ import org.bukkit.event.player.*
 import org.bukkit.potion.PotionEffect
 import org.bukkit.potion.PotionEffectType
 import java.util.*
+import kotlin.collections.ArrayList
 
 
 class EventManager : Listener {
@@ -29,6 +30,7 @@ class EventManager : Listener {
     companion object{
         var GunList = ArrayList<Material>()
         var DropList = ArrayList<EntityType>()
+        var SneckList = ArrayList<Player>()
         lateinit var game: Game
         var PlayerCanExpendBlockMap = HashMap<Player,Boolean>()
     }
@@ -101,10 +103,17 @@ class EventManager : Listener {
         if(event.player.inventory.itemInHand.type in GunList) {
             if (event.isSneaking) {
                 event.player.addPotionEffect(PotionEffect(PotionEffectType.SLOW, 255555, 255, false, false), false)//视角变化
+                if(!SneckList.contains(event.player)){//只加入蹲下列表一次
+                    SneckList.add(event.player)
+                }
+
             } else {
                 Bukkit.getScheduler().runTaskLater(setup.instance, Runnable {
                     event.player.removePotionEffect(PotionEffectType.SLOW)//视角变化
                 }, 1)
+                if(SneckList.contains(event.player)){//如果蹲下列表有 就删除一次
+                    SneckList.remove(event.player)
+                }
             }
         }
     }
